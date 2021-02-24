@@ -11,30 +11,34 @@ body {
 .grid-wrapper {
   height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  
 }
 
 .grid {
-  align-items: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-wrap: wrap;
+  padding: 0%;
+  margin:0%;
+  background-image: url(https://cutewallpaper.org/21/tumblr-space-backgrounds/%CB%8F%CB%8B-keep-it-cute-%CB%8E%CB%8A%CB%97-Heres-my-collection-of-pixel-.gif);
+  background-size: cover;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto ;
+  grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
   height: 100%;
-  justify-content: center;
-  height: 600px;
-  width: 600px;
+  width: 100%;
 }
 
+.alien{
+
+}
+
+
 .grid div {
-  background-color: navy;
-  flex-grow: 1;
-  height: 10%;
-  width: 10%;
+  background-size: cover;
+  flex-grow: 0;
+  
 }
 
 .grid div.player {
-  background-image: url('https://images.squarespace-cdn.com/content/v1/551a19f8e4b0e8322a93850a/1483644296619-A8050UVA5UESM5VD6P1P/ke17ZwdGBToddI8pDm48kBjToi_VuearDK0qkJkm1GtZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpx5xM9LbREd49NeYXVUR6tHufaqvFWZeJ1BzqmKd75rDakRfLSFWxeI9DggYzWC_Rk/TItan_Shield.gif');
+  background-image: url(../Assets/player.gif);
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
