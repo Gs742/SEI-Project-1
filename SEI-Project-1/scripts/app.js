@@ -7,10 +7,13 @@ const grid = document.querySelector('.grid')
   const cellCount = (width * height)
   const cells = []
 
+  const leftEdge = [0,20,40,60,80,100,120,140,160,180,200,220,240,260,280]
+  const rightEdge = [19,39,59,79,99,119,139,159,179,199,219,239,259,279,299]
   //#region wave stuff
   const alienWave = []
   let currentWave = 1
-  let waveCleared = false;
+  let waveCleared = true;
+  let waveSpawned = false;
   //#endregion
 
   const alien = {
@@ -18,11 +21,6 @@ const grid = document.querySelector('.grid')
     alienClass: 'alien',
     alienLazer: 'alienLazer',
     alienPosition: 0,
-    alienShoot: function() {
-      gameBoard[alien.alienPosition + width].classList.add(alien.alienLazer)
-
-    }
-    
   }
 
   const player = {
@@ -50,23 +48,30 @@ const grid = document.querySelector('.grid')
     return(cells)   
   }
 
-  function loadObjects(alien, player, asteroid){
+  function loadObjects(enemy, player, asteroid){
   addplayer(player.playerStartPosition)
-
-    for(i=0;i <= currentWave + 10; i++){
-      alienWave.push(alien)
-      alien
-      addAlien(i, alien)
-      console.log('Alien count: ' + i)
+  if(waveSpawned === false && waveCleared === true ){
+    for(i=0;i <= currentWave + 8; i++){
+      alienWave.push(enemy)
+      enemy.alienPosition = i
+      addAlien(enemy.alienPosition, enemy)
+      console.log(enemy.alienPosition)
     }
-    if(waveCleared === false){
-    startMoving()
+    waveSpawned = true
+  }
+    if(waveCleared === true && waveSpawned === true){
+      waveCleared = false 
+      startMoving()
+      
     }
   }
 
   function addAlien(position, alienToAdd) {
+    console.log("Add aliens")
+    console.log(position +" "+ alienToAdd)
+
     if(gameBoard[position].classList.contains(alien.alienClass) === false && gameBoard[position].classList.contains(asteroid.asteroidClass) === false ){
-      alienToAdd.alienPosition = position
+
       gameBoard[position].classList.add(alienToAdd.alienClass)
     }
     else{
@@ -87,31 +92,50 @@ const grid = document.querySelector('.grid')
   }
   
   function moveWave(wave){
-    let move = 1
-    const left = wave[0] % width === 0
-    const right = wave[wave.length - 1] % width === width - 1
+    console.log(wave)
+    let direction = 1
+    //remove the wave from their current locations and update the aliens with their new location
+    for(i = 0; i < wave.length; i ++){
+      if(leftEdge.includes(gameBoard[Number(wave[i].alienPosition)]) === true && direction === -1 ){
+        wave.forEach(element => {
+          if(gameBoard[element.alienPosition].classList.contains(element.alienClass)=== true){
+            gameBoard[element.alienPosition].classList.remove(element.alienClass)
+            element.alienPosition += width
+          }
+          else {
+            console.log("SOMETHINGS WRONG")
+          }
+        });
+        direction = 1
+        break
+      }
+      else if(rightEdge.includes(gameBoard[Number(wave[i].alienPosition)]) === true && direction === 1){
+        wave.forEach(element => {
+          if(gameBoard[element.alienPosition].classList.contains(element.alienClass)=== true){
+            gameBoard[element.alienPosition].classList.remove(element.alienClass)
+            element.alienPosition += width
+          }
+          else {
+            console.log("SOMETHINGS WRONG")
+          }
+        });
+        direction = -1
+        break
+      }
+      else{  
+          if(gameBoard[Number(wave[i].alienPosition)].classList.contains(alien.alienClass)=== true){
+            gameBoard[Number(wave[i].alienPosition)].classList.remove(alien.alienClass)
+            gameBoard[Number(wave[i].alienPosition)].alienPosition += direction
+          }
+          else{
+            console.log("SOMETHINGS WRONG 2")
+          }
+        break;
+      }
+    }
 
-    if((left && move === -1)|| (right && move === 1)){
-      move = width
-    }else if(move === width){
-      if(left) move = 1
-      else move = -1
-    }
-    console.log()
-    for(let i = 0; i <= wave.length - 1; i++){
-      if(gameBoard[wave[i].alienPosition].classList.contains(alien.alienClass) === true){
-        gameBoard[wave[i].alienPosition].classList.remove(alien.alienClass)
-      }
-      
-    }
-    for(let i = 0; i <= wave.length - 1; i++){
-      wave[i].alienPosition += wave
-    }
-    for(let i = 0; i <= wave.length - 1; i++){
-      if(gameBoard[wave[i].alienPosition].classList.contains(alien.alienClass) === false){
-        gameBoard[wave[i].alienPosition].classList.add(alien.alienClass)
-      }
-      
+    for(i = 0; i < wave.length - 1; i++){
+      addAlien(wave[i].alienPosition , wave[i])
     }
   }
 
