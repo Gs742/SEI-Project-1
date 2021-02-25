@@ -59,3 +59,7 @@ background-color: red;
 .shields{
   background-image: url(../Assets/player.gif) !important;
 }
+
+.explode{
+  background-image: url(../Assets/Explosion.gif) !important;
+}
