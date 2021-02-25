@@ -7,17 +7,34 @@ const grid = document.querySelector('.grid')
   const cellCount = (width * height)
   const cells = []
 
-  const alien = { }
+  //#region wave stuff
+  const alienWave = []
+  let currentWave = 1
+  let waveCleared = false;
+  //#endregion
+
+  const alien = {
+    placeInWave: 0,
+    alienClass: 'alien',
+    alienLazer: 'alienLazer',
+    alienPosition: 0,
+    alienShoot: function() {
+      gameBoard[alien.alienPosition + width].classList.add(alien.alienLazer)
+
+    }
+    
+  }
 
   const player = {
   playerClass: 'player',
-  playerStartPosition: cellCount - width,
-  playerCurrentPosition: 0,
+  playerShield: 'shields',
+  playerStartPosition: cellCount - width/2,
+  currentPosition: 0,
   lives: 3
   }
 
   const asteroid = {
-
+  asteroidClass: 'asteroid'
   }
 
   const gameBoard = createGrid()
@@ -35,59 +52,108 @@ const grid = document.querySelector('.grid')
 
   function loadObjects(alien, player, asteroid){
   addplayer(player.playerStartPosition)
-  console.log(player)
 
+    for(i=0;i <= currentWave + 10; i++){
+      alienWave.push(alien)
+      alien
+      addAlien(i, alien)
+      console.log('Alien count: ' + i)
+    }
+    if(waveCleared === false){
+    startMoving()
+    }
   }
+
+  function addAlien(position, alienToAdd) {
+    if(gameBoard[position].classList.contains(alien.alienClass) === false && gameBoard[position].classList.contains(asteroid.asteroidClass) === false ){
+      alienToAdd.alienPosition = position
+      gameBoard[position].classList.add(alienToAdd.alienClass)
+    }
+    else{
+      console.log('Lost')
+    }
+  }
+
+  function startMoving(){
+    setInterval(()=>{
+      if(waveCleared === false){
+        moveWave(alienWave)
+      }
+      else{
+        //wait
+        console.log('WAVE CLEARED')
+      }
+    },2000)
+  }
+  
+  function moveWave(wave){
+    let move = 1
+    const left = wave[0] % width === 0
+    const right = wave[wave.length - 1] % width === width - 1
+
+    if((left && move === -1)|| (right && move === 1)){
+      move = width
+    }else if(move === width){
+      if(left) move = 1
+      else move = -1
+    }
+    console.log()
+    for(let i = 0; i <= wave.length - 1; i++){
+      if(gameBoard[wave[i].alienPosition].classList.contains(alien.alienClass) === true){
+        gameBoard[wave[i].alienPosition].classList.remove(alien.alienClass)
+      }
+      
+    }
+    for(let i = 0; i <= wave.length - 1; i++){
+      wave[i].alienPosition += wave
+    }
+    for(let i = 0; i <= wave.length - 1; i++){
+      if(gameBoard[wave[i].alienPosition].classList.contains(alien.alienClass) === false){
+        gameBoard[wave[i].alienPosition].classList.add(alien.alienClass)
+      }
+      
+    }
+  }
+
+
 
   function addplayer(position) { 
     gameBoard[position].classList.add(player.playerClass) 
-    player.playerCurrentPosition = position
+    player.currentPosition = position
   }
   function removeplayer(position) {
     gameBoard[position].classList.remove(player.playerClass)
-  }
-
-  
-
-  function addAlien(amount){
-  if(gameBoard[0].classList.alien === null){
-    gameBoard[0].classList.add(alien)
-  }
+      if(gameBoard[position].classList.contains(player.playerShield) === true){
+        gameBoard[position].classList.remove(player.playerShield)
+      }
   }
 
 
 
-  function handleKeyUp(event) {
+  function keyDown(event) {
     const key = event.keyCode
 
-    removeplayer(player.playerCurrentPosition)
+    removeplayer(player.currentPosition)
     
-    if (key === 39 && player.playerCurrentPosition < gameBoard.length - 1) {
-      player.playerCurrentPosition++
-    } else if (key === 37 && player.playerCurrentPosition >= gameBoard.length - width +1 ) {
-      player.playerCurrentPosition--
-    } else if (key === 38 && player.playerCurrentPosition >= width) {
+    if (key === 39 && player.currentPosition < gameBoard.length - 1) {
+      player.currentPosition++
+    } else if (key === 37 && player.currentPosition >= gameBoard.length - width +1 ) {
+      player.currentPosition--
+    } else if (key === 38 && player.currentPosition >= width) {
       //Up
       console.log('Up Pressed - Shoot Projectile')
     } else if (key === 40) {
+      gameBoard[player.currentPosition].classList.add('shields')
+      console.log(gameBoard[player.currentPosition].classList) 
       console.log('Down Pressed - Shields or something?')
     } else {
       console.log('INVALID KEY')
     }
     
-    addplayer(player.playerCurrentPosition)
+    addplayer(player.currentPosition)
   }
 
   // * Event listeners
-  document.addEventListener('keyup', handleKeyUp)
-
-  
-
-
-
-
-
-
-
+  document.addEventListener('keydown', keyDown)
 }
 window.addEventListener('DOMContentLoaded', init)

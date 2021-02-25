@@ -27,19 +27,35 @@ body {
 }
 
 .alien{
-
+  background-image: url(/Users/georgeshaw/Desktop/development/PROJECTS/SEI-Project-1/SEI-Project-1/Assets/alienShip.gif);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.alienLazer{
+  background-color: greenyellow;
 }
 
+.asteroid{
+  background-image: url(Assets/Asteroid.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
 
 .grid div {
   background-size: cover;
   flex-grow: 0;
-  
 }
 
 .grid div.player {
-  background-image: url(../Assets/player.gif);
+  background-image: url(../Assets/player.png);
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
+}
+.lazer{
+background-color: red;
+}
+
+.shields{
+  background-image: url(../Assets/player.gif) !important;
 }
