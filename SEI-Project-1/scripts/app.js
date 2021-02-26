@@ -34,20 +34,51 @@ const grid = document.querySelector('.grid')
 
   const lazer ={
     lazerPosition:0,
-    lazerClass: "lazer"
+    lazerClass: "lazer",
+    moveLazer: function (startingLocation) {
+      setInterval(()=>{
+        if(gameBoard[startingLocation].classList.contains(this.lazerClass) === true){
+          gameBoard[startingLocation].classList.remove(this.lazerClass)
+          startingLocation -= width        
+        }
+        else if(gameBoard[startingLocation].classList.contains(this.lazerClass) === false){
+          //the lazer was deleted in the next bit of code so remove the lazer from the array
+          //and stop this setInterval
+          console.log("sajhflsdkjhflk")
+        }
+        
+        if(gameBoard[startingLocation].classList.contains('alien')===true){
+          lazerArray.pop[this]
+          gameBoard[startingLocation].classList.remove('alien')
+          gameBoard[startingLocation].classList.add('explode')
+          //Add some points
+          setTimeout(()=>{
+            gameBoard[startingLocation].classList.remove('explode')
+          }, 1500)
+          clearInterval()
+        }else if(gameBoard[startingLocation].classList.contains('asteroid')===true ){
+          lazerArray.pop[this]
+          gameBoard[startingLocation].classList.remove('alien')
+          gameBoard[startingLocation].classList.add('explode')
+          //Add some points
+          setTimeout(()=>{
+            gameBoard[startingLocation].classList.remove('explode')
+          }, 1500)
+          clearInterval()
+        }else if(gameBoard[startingLocation].classList.contains('asteroid')===false && gameBoard[startingLocation].classList.contains('alien')===false){
+          gameBoard[startingLocation].classList.add('lazer')
+        }
+      
+      }, 500)
+    }
   }
+  
+
   const alienLazer ={
     lazerPosition:0,
     lazerClass: "alienLazer"
   }
-  function createNewAlienLazer(i) {
-    //alien lazer stuff
-  }
-  function createNewLazer(i){
-    var newLazer = Object.assign({}, lazer)
-    newLazer.lazerPosition = i
-    return(newLazer)
-  }
+  
   
   const player = {
   playerClass: 'player',
@@ -202,47 +233,16 @@ const grid = document.querySelector('.grid')
     }
   }
 
-  function shootLazer(position){
-    gameBoard[position].classList.add(lazer.lazerClass)
-    let lazer = createNewLazer(position)
-    lazerArray.add(lazer)
+  function shootLazer(position, type){
+    if(type === 'player'){
+      gameBoard[position].classList.add('lazer')
+      let newLazer = Object.assign({}, lazer)
+      lazerArray.push(newLazer)
+      newLazer.moveLazer(position)
+    }
   }
 
-  setInterval(()=>{
-  lazerArray.forEach(element=>{
-    if(element.lazerClass === "lazer"){
-      gameBoard[element.lazerPosition].classList.remove(element.lazerClass)
-      element.lazerPosition += width
-    }else if(element.lazerClass === "alienLazer"){
-      gameBoard[element.lazerPosition].classList.remove(element.lazerClass)
-      element.lazerPosition -= width
-    }
-
-    lazerArray.forEach(element=>{
-      if(element.lazerClass === "lazer"){
-        gameBoard[element.lazerPosition].classList.add(element.lazerClass)
-        if(gameBoard[element.lazerPosition].classList.contains(alien.alienClass) === true){
-          gameBoard[element.lazerPosition].classList.remove(alien.alienClass)
-          gameBoard[element.lazerPosition].classList.add('explode')
-          setTimeout(()=> gameBoard[element.lazerPosition].classList.remove('explode'), 250)
-          // search the alien wave and find the alien on that grid square and remove it from the array
-        }
-
-      }else if(element.lazerClass === "alienLazer"){
-        gameBoard[element.lazerPosition].classList.add(element.lazerClass)
-        if(gameBoard[element.lazerPosition].classList.contains(player.playerClass)){
-          gameBoard[element.lazerPosition].classList.remove(element.lazerClass)
-          gameBoard[element.lazerPosition].classList.add('explode')
-          setTimeout(()=> gameBoard[element.lazerPosition].classList.remove('explode'), 250)
-          player.lives -= 1
-          if(player.lives === 0){
-            //GAME OVER
-          }
-        }
-      }
-    })
-  })
-  }, 250)
+  
 
 
   function keyDown(event) {
@@ -257,7 +257,7 @@ const grid = document.querySelector('.grid')
     } else if (key === 38 && player.currentPosition >= width) {
       //Up
       console.log('Up Pressed - Shoot Projectile')
-      shootLazer(player.currentPosition)
+      shootLazer(player.currentPosition, 'player')
     } else if (key === 40) {
       gameBoard[player.currentPosition].classList.add('shields')
       console.log(gameBoard[player.currentPosition].classList) 

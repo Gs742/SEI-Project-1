@@ -5,13 +5,18 @@
 body {
   height: 100vh;
   margin: 0;
-}
 
+}
+h3{
+  justify-content: center;
+  font-family: 'Antic Slab';
+  font-size: xx-large;
+}
 
 .grid-wrapper {
   height: 100vh;
   display: flex;
-  
+  max-width: 1200px;
 }
 
 .grid {
