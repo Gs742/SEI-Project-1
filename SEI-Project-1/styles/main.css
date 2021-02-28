@@ -5,34 +5,42 @@
 body {
   height: 100vh;
   margin: 0;
-
+  font-family: 'Antic Slab';
+  font-size: xx-large;
 }
 h3{
   justify-content: center;
-  font-family: 'Antic Slab';
-  font-size: xx-large;
+  
+  align-content: center;
+}
+section{
+  display: flex;
+  flex-direction: column;
+  flex-grow: inherit;
 }
 
 .grid-wrapper {
   height: 100vh;
   display: flex;
-  max-width: 1200px;
+  flex-wrap: nowrap;
+  flex-grow: 1;
 }
 
 .grid {
   padding: 0%;
   margin:0%;
-  background-image: url(https://cutewallpaper.org/21/tumblr-space-backgrounds/%CB%8F%CB%8B-keep-it-cute-%CB%8E%CB%8A%CB%97-Heres-my-collection-of-pixel-.gif);
+  background-image: url(https://cutewallpaper.org/21/tumblr-space-backgrounds/space-backgrounds-tumblr-hd-background-desktop-Tessera-Guild.jpg);
   background-size: cover;
   display: grid;
   grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto ;
   grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
   height: 100%;
-  width: 100%;
+  width: 80%;
+  max-width: 1300px;
 }
 
 .alien{
-  background-image: url(/Users/georgeshaw/Desktop/development/PROJECTS/SEI-Project-1/SEI-Project-1/Assets/alienShip.gif);
+  background-image: url(../Assets/alienShip.gif);
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -41,7 +49,7 @@ h3{
 }
 
 .asteroid{
-  background-image: url(Assets/Asteroid.png);
+  background-image: url(../Assets/Asteroid.png);
   background-size: contain;
   background-repeat: no-repeat;
 }

@@ -9,6 +9,8 @@ const grid = document.querySelector('.grid')
   const spawnCells = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]
   const leftEdge = [0,20,40,60,80,100,120,140,160,180,200,220,240,260,280]
   const rightEdge = [19,39,59,79,99,119,139,159,179,199,219,239,259,279,299]
+
+  let shooting = false
   //
   
   //#region wave stuff
@@ -37,40 +39,67 @@ const grid = document.querySelector('.grid')
     lazerPosition:0,
     lazerClass: "lazer",
     moveLazer: function (startingLocation) {
-      setInterval(()=>{
+      const lazerId = setInterval(()=>{
         if(gameBoard[startingLocation].classList.contains(this.lazerClass) === true){
           gameBoard[startingLocation].classList.remove(this.lazerClass)
-          startingLocation -= width        
+          startingLocation -= width      
+          if(startingLocation <= 19){
+            for(let b = 0; b <= 19; b++){
+              if(gameBoard[b].classList.contains('lazer') === true){
+                gameBoard[b].classList.remove('lazer')
+              }
+            }
+            clearInterval(lazerId)
+          }  
         }
         else if(gameBoard[startingLocation].classList.contains(this.lazerClass) === false){
           //the lazer was deleted in the next bit of code so remove the lazer from the array
           //and stop this setInterval
           console.log("sajhflsdkjhflk")
+          clearInterval(lazerId)
         }
         
         if(gameBoard[startingLocation].classList.contains('alien')===true){
-          lazerArray.pop[this]
-          gameBoard[startingLocation].classList.remove('alien')
-          gameBoard[startingLocation].classList.add('explode')
+          alienWave.filter(obj =>{
+            if(obj.alienPosition === startingLocation ){
+              console.log("ALIEN WAVE: " + alienWave.length)
+              console.log("WORKING BOIII")
+              lazerArray.pop(this)
+              alienWave.pop(obj)
+              gameBoard[startingLocation].classList.remove('alien')
+              gameBoard[startingLocation].classList.remove('lazer')
+              gameBoard[startingLocation].classList.add('explode')
+              console.log("ALIEN WAVE: " + alienWave.length)
+              if(alienWave.length === 0){
+                waveSpawned =false
+                waveCleared = true
+                currentWave ++
+
+              }
+            }
+          })
+          let i = startingLocation
           //Add some points
+          clearInterval(lazerId)
           setTimeout(()=>{
-            gameBoard[startingLocation].classList.remove('explode')
-          }, 1500)
-          clearInterval()
+            gameBoard[i].classList.remove('explode')
+          }, 1000)
+          
         }else if(gameBoard[startingLocation].classList.contains('asteroid')===true ){
           lazerArray.pop[this]
           gameBoard[startingLocation].classList.remove('alien')
           gameBoard[startingLocation].classList.add('explode')
+          let i = startingLocation
           //Add some points
           setTimeout(()=>{
             gameBoard[startingLocation].classList.remove('explode')
-          }, 1500)
-          clearInterval()
+          }, 1000)
+          clearInterval(lazerId)
         }else if(gameBoard[startingLocation].classList.contains('asteroid')===false && gameBoard[startingLocation].classList.contains('alien')===false){
           gameBoard[startingLocation].classList.add('lazer')
         }
       
-      }, 500)
+      }, 200)
     }
   }
   
@@ -99,7 +128,7 @@ const grid = document.querySelector('.grid')
   function createGrid() {
     for (let i = 0; i < cellCount; i++) {
       const cell = document.createElement('div')
-      cell.textContent = i
+
       grid.appendChild(cell)
       cells.push(cell)
     }
@@ -107,8 +136,16 @@ const grid = document.querySelector('.grid')
   }
 
   function loadObjects(enemy, player, asteroid){
-  addplayer(player.playerStartPosition)
-
+    let playerCheck = false
+    for(g = 0; g<= gameBoard.length - 1; g++){
+      if(gameBoard[g].classList.contains('player') === true){
+        playerCheck = true
+      }
+    }
+    if(playerCheck === false){
+      addplayer(player.playerStartPosition)
+    }
+  
   if(waveSpawned === false && waveCleared === true ){
     for(i=0;i <= waveAmount; i++){
       fooEnemy = createNewAlien(spawnCells[i])
@@ -128,40 +165,30 @@ const grid = document.querySelector('.grid')
   
 
   function startMoving(){
-    console.log("Start MOVING")
-    setInterval(()=>{
-      if(waveCleared === false){
-        moveWave()
-      }
-      else{
-        //wait
-        console.log('WAVE CLEARED')
-        
-      }
-    },1000)
-  }
-  
-  function moveWave(){
+    const waveId = setInterval(()=>{
+    if(waveCleared === false){
     let right = false
     let left = false
     let i =0
     alienWave.forEach(element => {
-      if(leftEdge.includes(alienWave[i].alienPosition) === true && direction === -1){
-        console.log("ITS IN")
-        left = true
-        direction = 1
-        i++
-      }
-      else if(rightEdge.includes(alienWave[i].alienPosition) === true && direction === 1 ){
-        right = true
-        direction = -1
-        i++
-      }
-      else{
-        console.log("Element not on any edge " + element)
-        i++
-      }
+    if(leftEdge.includes(alienWave[i].alienPosition) === true && direction === -1){
+    left = true
+    direction = 1
+    i++
+    }else if(rightEdge.includes(alienWave[i].alienPosition) === true && direction === 1 ){
+      right = true
+      direction = -1
+      i++
+    }else if(alienWave[i].alienPosition >= 280){
+    //end the game
+    clearInterval(waveId)
+    console.log("GAME OVER")
+    }else{
+      console.log("Element not on any edge " + element)
+      i++
+    }
     });
+
     i = 0
     if(left === true){
       alienWave.forEach(element =>{
@@ -169,6 +196,12 @@ const grid = document.querySelector('.grid')
         alienWave[i].alienPosition += width
         i++
       })
+      gameBoard.forEach(element =>{
+      if(element.classList.contains('alien')===true){
+        element.classList.remove('alien')
+      }
+      })
+
       i = 0
       alienWave.forEach(element => {
         addAlien(alienWave[i].alienPosition)
@@ -181,6 +214,11 @@ const grid = document.querySelector('.grid')
         alienWave[i].alienPosition += width
         i++
       })
+      gameBoard.forEach(element =>{
+        if(element.classList.contains('alien')===true){
+          element.classList.remove('alien')
+        }
+        })
       i = 0
       alienWave.forEach(element=>{
         addAlien(alienWave[i].alienPosition)
@@ -188,7 +226,6 @@ const grid = document.querySelector('.grid')
       })
       i = 0
     }
-    //Unless the wave has hit an edge go into this else statement as default
     else{
       console.log("Ended up here")
       i = 0
@@ -197,6 +234,11 @@ const grid = document.querySelector('.grid')
         alienWave[i].alienPosition += direction
         i++
       })
+      gameBoard.forEach(element =>{
+        if(element.classList.contains('alien')===true){
+          element.classList.remove('alien')
+        }
+        })
       i = 0
       alienWave.forEach(element=>{
         addAlien(alienWave[i].alienPosition)
@@ -204,8 +246,15 @@ const grid = document.querySelector('.grid')
       })
       i = 0
     }
+      }
+      else{
+        //wait
+        console.log('WAVE CLEARED')
+        clearInterval(waveId)
+        loadObjects(alien, player, asteroid)
+      }
+    },1000)
   }
-
   function addplayer(position) { 
     gameBoard[position].classList.add(player.playerClass) 
     player.currentPosition = position
@@ -258,7 +307,16 @@ const grid = document.querySelector('.grid')
     } else if (key === 38 && player.currentPosition >= width) {
       //Up
       console.log('Up Pressed - Shoot Projectile')
-      shootLazer(player.currentPosition, 'player')
+      if(shooting === false){
+        shootLazer(player.currentPosition, 'player')
+        shooting = true
+        setTimeout(()=>{
+        shooting = false
+        }, 249 )
+      }else{
+        console.log("sfjjlkfjhgaskjfhgdsakjf")
+      }
+      
     } else if (key === 40) {
       gameBoard[player.currentPosition].classList.add('shields')
       console.log(gameBoard[player.currentPosition].classList) 
