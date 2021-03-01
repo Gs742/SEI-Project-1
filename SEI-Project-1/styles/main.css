@@ -8,24 +8,44 @@ body {
   font-family: 'Antic Slab';
   font-size: xx-large;
 }
+
+
+.start{
+  height:100px;
+  font-family: 'Antic Slab';
+  font-size: xx-large;
+  background-color: lightskyblue;
+  margin-top: 20px;
+}
 h3{
   justify-content: center;
-  
   align-content: center;
+  text-align: center;
 }
 section{
   display: flex;
   flex-direction: column;
   flex-grow: inherit;
+  background-color:rebeccapurple ;
 }
-
+.cover{
+  background-image: url(https://wallpapercave.com/wp/57DQCPL.jpg) !important;
+  background-size: cover;
+  max-width: 1300px;
+}
 .grid-wrapper {
   height: 100vh;
   display: flex;
   flex-wrap: nowrap;
   flex-grow: 1;
 }
-
+#playAgain{
+  height:100px;
+  font-family: 'Antic Slab';
+  font-size: xx-large;
+  background-color: lightskyblue;
+  margin-top: 20px;
+}
 .grid {
   padding: 0%;
   margin:0%;
@@ -45,7 +65,7 @@ section{
   background-repeat: no-repeat;
 }
 .alienLazer{
-  background-color: greenyellow;
+  background-image: url(../Assets/alienLazer.png);
 }
 
 .asteroid{
@@ -66,7 +86,7 @@ section{
   cursor: pointer;
 }
 .lazer{
-background-color: red;
+background-image: url(../Assets/playerLazer.png);
 }
 
 .shields{
